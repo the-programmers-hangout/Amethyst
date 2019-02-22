@@ -1,6 +1,7 @@
 package me.elliott.amethyst.commands
 
 import me.aberrantfox.kjdautils.api.dsl.*
+import me.elliott.amethyst.services.ListenerService
 
 @CommandSet
 fun utilityCommands() = commands {
@@ -15,6 +16,13 @@ fun utilityCommands() = commands {
         description = "Display the source code via a GitLab link."
         execute {
             it.respond("https://github.com/elliottshort/amethyst")
+        }
+    }
+
+    command("createListener") {
+        description = "Create a listener."
+        execute {
+            ListenerService.
         }
     }
 

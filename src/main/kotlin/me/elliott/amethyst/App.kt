@@ -13,7 +13,6 @@ private fun start(token: String) = startBot(token) {
         prefix = "-"
         globalPath = "me.elliott.amethyst"
     }
-
     jda.presence.setPresence(Game.of(Game.GameType.WATCHING, "The Server"), true)
 }
 
