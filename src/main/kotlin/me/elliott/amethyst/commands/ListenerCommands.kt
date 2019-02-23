@@ -2,7 +2,7 @@ package me.elliott.amethyst.commands
 
 import me.aberrantfox.kjdautils.api.dsl.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.commands
-import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
+import me.elliott.amethyst.arguments.ChannelOrUserArg
 import me.elliott.amethyst.arguments.ListenerArg
 import me.elliott.amethyst.services.ListenerService
 import me.elliott.amethyst.services.ListenerState
@@ -21,13 +21,26 @@ fun listenerCommands(listenerService: ListenerService) = commands {
     }
 
     command("addSource") {
-        description = "Create a listener."
+        description = "Add a listening source to a listener."
 
-        expect(ListenerArg)
+        expect(ListenerArg, ChannelOrUserArg)
 
         execute {
-           var result = it.args.component1() as ListenerState
-            it.respond("Success :: **$result**")
+            val result = it.args.component1() as ListenerState
+            listenerService.addSourceOrDestination(result, it.args.component2(), true)
+            it.respond("Source :: **${it.args.component2()}** added successfully")
+        }
+    }
+
+    command("addDestination") {
+        description = "Add a destination for message that match the listeners criteria."
+
+        expect(ListenerArg, ChannelOrUserArg)
+
+        execute {
+            val result = it.args.component1() as ListenerState
+            listenerService.addSourceOrDestination(result, it.args.component2(), false)
+            it.respond("Destination :: **${it.args.component2()}** added successfully")
         }
     }
 }

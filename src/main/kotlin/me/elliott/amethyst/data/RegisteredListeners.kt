@@ -4,9 +4,11 @@ import me.elliott.amethyst.services.ListenerState
 
 class RegisteredListeners {
     companion object {
-        private var listeners = mutableListOf<ListenerState>()
 
-        fun getListener(id: String): ListenerState? = listeners.firstOrNull { l -> l.id == id }
+        var listeners = mutableListOf<ListenerState>()
+
+        fun tryReturnListener(id: String): ListenerState? = listeners.firstOrNull { l -> l.id == id }
+        fun getListener(id: String): ListenerState = listeners.first { l -> l.id == id}
         fun registerListener(listener: ListenerState) {
             listeners.add(listener)
         }

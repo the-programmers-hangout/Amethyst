@@ -14,7 +14,7 @@ open class ListenerArg(override val name: String = "ListenerArg") : ArgumentType
     override val consumptionType = ConsumptionType.Single
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent): ArgumentResult {
-        val retrieved = RegisteredListeners.getListener(arg)
+        val retrieved = RegisteredListeners.tryReturnListener(arg)
 
         return if (retrieved != null) {
             ArgumentResult.Single(retrieved)
