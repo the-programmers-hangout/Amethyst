@@ -3,7 +3,9 @@ package me.elliott.amethyst.commands
 import me.aberrantfox.kjdautils.api.dsl.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.commands
 import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
+import me.elliott.amethyst.arguments.ListenerArg
 import me.elliott.amethyst.services.ListenerService
+import me.elliott.amethyst.services.ListenerState
 import net.dv8tion.jda.core.entities.TextChannel
 
 
@@ -21,13 +23,11 @@ fun listenerCommands(listenerService: ListenerService) = commands {
     command("addSource") {
         description = "Create a listener."
 
-        expect(WordArg)
+        expect(ListenerArg)
 
         execute {
-            val eventChannel = it.channel as TextChannel
-            listenerService.createListener(it.author, eventChannel.guild, eventChannel)
+           var result = it.args.component1() as ListenerState
+            it.respond("Success :: **$result**")
         }
-
-
     }
 }

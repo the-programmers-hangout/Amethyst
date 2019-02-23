@@ -3,6 +3,7 @@ package me.elliott.amethyst.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
+import me.elliott.amethyst.data.RegisteredListeners
 import net.dv8tion.jda.core.JDA
 import net.dv8tion.jda.core.entities.*
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent
@@ -17,12 +18,11 @@ data class ListenerState(val id: String, val user: User, val guild: Guild,
 @Service
 class ListenerService(val jda: JDA, val configuration: Configuration) {
 
-    private val listeners = mutableListOf<ListenerState>()
     private var activeSessions = mutableMapOf<String, ListenerState>()
 
     private fun hasActiveBuildingSession(userId: String) = activeSessions.any { it.key == userId }
     private fun generateShortUUID(): String = UUID.randomUUID().toString().substring(0, 7)
-    fun getListener(id: String): ListenerState = listeners.first { l -> l.id == id }
+
 
     fun createListener(user: User, guild: Guild, channel: MessageChannel) {
 
@@ -32,7 +32,7 @@ class ListenerService(val jda: JDA, val configuration: Configuration) {
         val listener = ListenerState(generateShortUUID(), user, guild,
                 mutableListOf(), mutableListOf())
 
-        listeners.add(listener)
+        RegisteredListeners.registerListener(listener)
         channel.sendMessage(buildIntroductionEmbed(listener.guild, listener.id)).queue()
     }
 
@@ -73,7 +73,7 @@ class ListenerService(val jda: JDA, val configuration: Configuration) {
 
                 setThumbnail(listenerState.guild.iconUrl)
             }
-}
+
 
 fun buildSourceListEmbed(listenerState: ListenerState) =
         embed {
@@ -85,7 +85,6 @@ fun buildSourceListEmbed(listenerState: ListenerState) =
         }
 }
 
-class Listener(val name: String, val conditions: List<Condition>, val destinations: List<Destination>)
 
 data class Condition(val source: Source, val matches: Boolean)
 
