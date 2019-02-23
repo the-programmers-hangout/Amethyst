@@ -1,55 +1,93 @@
 package me.elliott.amethyst.services
 
-import com.google.common.eventbus.Subscribe
+
+import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
 import net.dv8tion.jda.core.JDA
-import net.dv8tion.jda.core.entities.Guild
-import net.dv8tion.jda.core.entities.TextChannel
-import net.dv8tion.jda.core.entities.User
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent
+import net.dv8tion.jda.core.entities.*
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent
 import java.awt.Color
+import java.util.*
+import java.util.regex.Pattern
+import java.util.regex.PatternSyntaxException
 
-data class ListenerState(val jda: JDA, val guild: Guild, val sources: List<Source>, val destinations: List<Destination>)
+data class ListenerState(val id: String, val user: User, val guild: Guild,
+                         val sources: List<Source>, val destinations: List<Destination>)
 
-fun createListenerState(jda: JDA, guild: Guild, sources: List<Source>, destinations: List<Destination>) {
-
-}
-
+@Service
 class ListenerService(val jda: JDA, val configuration: Configuration) {
 
-    private val listenerStates = mutableListOf<ListenerState>()
+    private val listeners = mutableListOf<ListenerState>()
+    private var activeSessions = mutableMapOf<String, ListenerState>()
 
-    @Subscribe
-    fun onPrivateMessageReceived(event: PrivateMessageReceivedEvent) {
+    private fun hasActiveBuildingSession(userId: String) = activeSessions.any { it.key == userId }
+    private fun generateShortUUID(): String = UUID.randomUUID().toString().substring(0, 7)
+
+    fun createListener(user: User, guild: Guild, channel: MessageChannel) {
+
+        if (hasActiveBuildingSession(user.id))
+            return
+
+        val listener = ListenerState(generateShortUUID(), user, guild,
+                mutableListOf(), mutableListOf())
+
+        listeners.add(listener)
+        channel.sendMessage(buildIntroductionEmbed(listener.guild, listener.id)).queue()
+    }
+
+    private fun handleResponse(listenerState: ListenerState, event: MessageReceivedEvent) {
 
     }
 
-    fun createListenerState(name: String, conditions: List<Condition>, destination: Destination) {
-        
+    private fun addSource(listenerState: ListenerState) {
+
     }
 
-    fun buildIntroductionEmbed(guildObject: Guild) =
+    private fun addPattern(listenerState: ListenerState) {
+
+    }
+
+    private fun addDestination(listenerState: ListenerState) {
+
+    }
+
+    private fun buildIntroductionEmbed(guildObject: Guild, listenerId: String) =
             embed {
-                setColor(Color.PINK)
+                setColor(Color.RED)
                 setTitle("Create Listener")
-                setAuthor("Let's create a listener in ${guildObject.name} - Where would you like me to listen to?")
-                description("Please provide a channel or user id, user mention, or simply say 'Everywhere'")
+                setAuthor("Let's create a listener in ${guildObject.name}")
+                description("\n Below is the ID you'll use when setting up the rest of the " +
+                        "parameters for your listener. \n \n Please refer to the help for the **addSource**, " +
+                        "**addDestination** and **addPattern** commands to continue.")
+                addField("ID", "**$listenerId**", true)
                 setThumbnail(guildObject.iconUrl)
             }
 
-    fun buildYesNoSourceChoiceEmbed(listenerState: ListenerState) =
+
+    fun buildSourceAddedEmbed(listenerState: ListenerState, isUser: Boolean) =
             embed {
                 setColor(Color.PINK)
                 setTitle("Would you like to listen to anything else?")
                 setAuthor("You're currently listening to ${getSourceNamesString(listenerState.sources)}")
-                description("Please provide a channel or user id, user mention, or simply say 'Everywhere'")
+
                 setThumbnail(listenerState.guild.iconUrl)
             }
 }
 
-class Listener(val name: String, val conditions: List<Condition>, val destination: Destination)
+fun buildSourceListEmbed(listenerState: ListenerState) =
+        embed {
+            setColor(Color.PINK)
+            setTitle("Would you like to listen to anything else?")
+            setAuthor("You're currently listening to ${getSourceNamesString(listenerState.sources)}")
+
+            setThumbnail(listenerState.guild.iconUrl)
+        }
+}
+
+class Listener(val name: String, val conditions: List<Condition>, val destinations: List<Destination>)
 
 data class Condition(val source: Source, val matches: Boolean)
+
 
 sealed class Source {
     class Everywhere(val listenEverywhere: Boolean) : Source()
@@ -83,4 +121,14 @@ fun getSourceNamesString(sources: List<Source>): String {
 }
 
 
+fun String.isRegex(): Boolean {
+    var isRegex = true
+
+    try {
+        Pattern.compile(this)
+    } catch (e: PatternSyntaxException) {
+        isRegex = false
+    }
+    return isRegex
+}
 

@@ -2,9 +2,10 @@ package me.elliott.amethyst.commands
 
 import me.aberrantfox.kjdautils.api.dsl.*
 import me.elliott.amethyst.services.ListenerService
+import net.dv8tion.jda.core.entities.TextChannel
 
 @CommandSet
-fun utilityCommands() = commands {
+fun utilityCommands(listenerService: ListenerService) = commands {
     command("ping") {
         description = "Check the status of the bot."
         execute {
@@ -19,12 +20,7 @@ fun utilityCommands() = commands {
         }
     }
 
-    command("createListener") {
-        description = "Create a listener."
-        execute {
-            ListenerService.
-        }
-    }
+
 
     command("Author") {
         description = "Display the bot author."
