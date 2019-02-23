@@ -22,6 +22,7 @@ class ListenerService(val jda: JDA, val configuration: Configuration) {
 
     private fun hasActiveBuildingSession(userId: String) = activeSessions.any { it.key == userId }
     private fun generateShortUUID(): String = UUID.randomUUID().toString().substring(0, 7)
+    fun getListener(id: String): ListenerState = listeners.first { l -> l.id == id }
 
     fun createListener(user: User, guild: Guild, channel: MessageChannel) {
 
