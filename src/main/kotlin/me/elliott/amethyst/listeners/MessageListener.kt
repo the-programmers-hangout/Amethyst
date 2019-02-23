@@ -12,6 +12,9 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 
 @Service
 class MessageListener(listenerService: ListenerService) {
+
+    val service = listenerService
+
     @Subscribe
     fun handleMessage(event: GuildMessageReceivedEvent) {
 
@@ -23,12 +26,14 @@ class MessageListener(listenerService: ListenerService) {
                 when (source) {
                     is TextChannel -> {
                         if (event.channel.id == source.id) {
-                            sendToDestinations(it.destinations, it.id, event.author, event.message.contentRaw)
+                            if (service.patternsMatch(it, event.message.contentRaw))
+                                sendToDestinations(it.destinations, it.id, event.author, event.message.contentRaw)
                         }
                     }
                     is User -> {
                         if (event.author.id == source.id) {
-                            sendToDestinations(it.destinations, it.id, event.author, event.message.contentRaw)
+                            if (service.patternsMatch(it, event.message.contentRaw))
+                                sendToDestinations(it.destinations, it.id, event.author, event.message.contentRaw)
                         }
                     }
                 }

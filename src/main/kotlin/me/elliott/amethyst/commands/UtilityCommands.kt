@@ -20,8 +20,6 @@ fun utilityCommands(listenerService: ListenerService) = commands {
         }
     }
 
-
-
     command("Author") {
         description = "Display the bot author."
         execute {

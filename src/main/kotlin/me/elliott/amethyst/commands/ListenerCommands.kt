@@ -2,6 +2,7 @@ package me.elliott.amethyst.commands
 
 import me.aberrantfox.kjdautils.api.dsl.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.commands
+import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
 import me.elliott.amethyst.arguments.ChannelOrUserArg
 import me.elliott.amethyst.arguments.ListenerArg
 import me.elliott.amethyst.services.ListenerService
@@ -11,6 +12,7 @@ import net.dv8tion.jda.core.entities.TextChannel
 
 @CommandSet
 fun listenerCommands(listenerService: ListenerService) = commands {
+
     command("createListener") {
         description = "Create a listener."
 
@@ -26,8 +28,8 @@ fun listenerCommands(listenerService: ListenerService) = commands {
         expect(ListenerArg, ChannelOrUserArg)
 
         execute {
-            val result = it.args.component1() as ListenerState
-            listenerService.addSourceOrDestination(result, it.args.component2(), true)
+            val listener = it.args.component1() as ListenerState
+            listenerService.addSourceOrDestination(listener, it.args.component2(), true)
             it.respond("Source :: **${it.args.component2()}** added successfully")
         }
     }
@@ -38,9 +40,23 @@ fun listenerCommands(listenerService: ListenerService) = commands {
         expect(ListenerArg, ChannelOrUserArg)
 
         execute {
-            val result = it.args.component1() as ListenerState
-            listenerService.addSourceOrDestination(result, it.args.component2(), false)
+            val listener = it.args.component1() as ListenerState
+            listenerService.addSourceOrDestination(listener, it.args.component2(), false)
             it.respond("Destination :: **${it.args.component2()}** added successfully")
+        }
+    }
+
+    command("addPattern") {
+        description = "Add a pattern that the specified listener should match against."
+
+        expect(ListenerArg, WordArg)
+
+        execute {
+            val listener = it.args.component1() as ListenerState
+            val pattern = it.args.component2() as String
+
+            listenerService.addPattern(listener, pattern)
+            it.respond("Pattern :: **${it.args.component2()}** added successfully")
         }
     }
 }

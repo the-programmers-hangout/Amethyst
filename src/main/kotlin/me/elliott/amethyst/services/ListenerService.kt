@@ -1,31 +1,28 @@
 package me.elliott.amethyst.services
 
-
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.elliott.amethyst.data.RegisteredListeners
 import me.elliott.amethyst.util.EmbedUtils
 import net.dv8tion.jda.core.JDA
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.MessageChannel
-import net.dv8tion.jda.core.entities.TextChannel
 import net.dv8tion.jda.core.entities.User
 import java.util.*
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 
 data class ListenerState(val id: String, val user: User, val guild: Guild,
-                         var sources: MutableList<Any>, var destinations: MutableList<Any>)
+                         var sources: MutableList<Any>, var destinations: MutableList<Any>, var patterns: MutableList<Any>)
 
 @Service
 class ListenerService(val jda: JDA, val configuration: Configuration) {
 
     private fun generateShortUUID(): String = UUID.randomUUID().toString().substring(0, 7)
 
-
     fun createListener(user: User, guild: Guild, channel: MessageChannel) {
 
         val listener = ListenerState(generateShortUUID(), user, guild,
-                mutableListOf(), mutableListOf())
+                mutableListOf(), mutableListOf(), mutableListOf())
 
         RegisteredListeners.registerListener(listener)
         channel.sendMessage(EmbedUtils.buildIntroductionEmbed(listener.guild, listener.id)).queue()
@@ -39,44 +36,38 @@ class ListenerService(val jda: JDA, val configuration: Configuration) {
         }
     }
 
-
-    private fun addPattern(listenerState: ListenerState, pattern: String) {
-
+    fun addPattern(listenerState: ListenerState, pattern: String) {
+        if (pattern.isRegex())
+            listenerState.patterns.add(Regex(pattern, RegexOption.IGNORE_CASE))
+        else
+            listenerState.patterns.add(pattern)
     }
 
+    fun patternsMatch(listenerState: ListenerState, message: String): Boolean {
+        var patternsMatch = false
+        var numberOfMatches = 0
 
-    sealed class Source {
-        class Everywhere(val listenEverywhere: Boolean) : Source()
-        class User(val user: net.dv8tion.jda.core.entities.User) : Source()
-        class Channel(val channel: TextChannel) : Source()
-    }
-
-    sealed class Destination {
-        data class User(val user: net.dv8tion.jda.core.entities.User) : Destination()
-        data class Channel(val channel: TextChannel) : Destination()
-        data class Error(val error: String) : Destination()
-    }
-
-    fun getSourceNamesString(sources: List<Source>): String {
-        var sourceString = ""
-        sources.forEach {
-            when (it) {
-                is Source.Everywhere -> {
-                    sourceString = "Listening to all messages, by all users, in all channels. "
+        listenerState.patterns.forEach { pattern ->
+            when (pattern) {
+                is Regex -> {
+                    if (pattern.containsMatchIn(message))
+                        numberOfMatches += 1
                 }
-                is Source.User -> {
-                    sourceString += "**User** :: ${it.user.asMention} "
-                }
-                is Source.Channel -> {
-                    sourceString += "**Channel** :: ${it.channel.asMention} "
+                is String -> {
+                    if (message.toLowerCase().contains(pattern.toLowerCase()))
+                        numberOfMatches += 1
                 }
             }
         }
-        return sourceString
+
+        if (numberOfMatches == listenerState.patterns.size)
+            patternsMatch = true
+
+        println("Number of matches :: $numberOfMatches")
+        return patternsMatch
     }
 
-
-    fun String.isRegex(): Boolean {
+    private fun String.isRegex(): Boolean {
         var isRegex = true
 
         try {
