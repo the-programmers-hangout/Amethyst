@@ -41,7 +41,6 @@ class MessageListener(listenerService: ListenerService) {
         }
     }
 
-
     fun sendToDestinations(destinations: List<Any>, listenerId: String, user: User, match: String) {
         destinations.forEach { destination ->
             when (destination) {
