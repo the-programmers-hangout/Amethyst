@@ -1,8 +1,12 @@
 package me.elliott.amethyst.commands
 
 import me.aberrantfox.kjdautils.api.dsl.*
+import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.elliott.amethyst.services.ListenerService
+import me.elliott.amethyst.services.ScriptEngineService
 import net.dv8tion.jda.core.entities.TextChannel
+import javax.script.Invocable
+import javax.script.ScriptEngineManager
 
 @CommandSet
 fun utilityCommands(listenerService: ListenerService) = commands {
@@ -24,6 +28,22 @@ fun utilityCommands(listenerService: ListenerService) = commands {
         description = "Display the bot author."
         execute {
             it.respond("Elliott#0001")
+        }
+    }
+}
+
+@CommandSet("api")
+fun kotlinScriptCommands() = commands {
+    command("eval") {
+        description = "Evaluate Kotlin Script code - without an automatic response."
+        expect(SentenceArg("Kotlin Code"))
+        execute {
+            val script = it.args.component1() as String
+            val functionContext = ScriptEngineService.EngineContainer.generateFunctionContext(script)
+
+            with(ScriptEngineManager().getEngineByExtension("kts")) {
+                it.respond(eval(script).toString())
+            }
         }
     }
 }

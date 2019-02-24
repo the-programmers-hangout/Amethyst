@@ -6,7 +6,6 @@ import me.aberrantfox.kjdautils.internal.command.ArgumentType
 import me.aberrantfox.kjdautils.internal.command.ConsumptionType
 import me.elliott.amethyst.data.RegisteredListeners
 
-
 open class ListenerArg(override val name: String = "ListenerArg") : ArgumentType {
     companion object : ListenerArg()
 
