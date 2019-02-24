@@ -5,6 +5,7 @@ import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.elliott.amethyst.services.ListenerService
 import me.elliott.amethyst.services.ScriptEngineService
 import net.dv8tion.jda.core.entities.TextChannel
+import java.lang.Exception
 import javax.script.Invocable
 import javax.script.ScriptEngineManager
 
@@ -41,8 +42,14 @@ fun kotlinScriptCommands() = commands {
             val script = it.args.component1() as String
             val functionContext = ScriptEngineService.EngineContainer.generateFunctionContext(script)
 
-            with(ScriptEngineManager().getEngineByExtension("kts")) {
-                it.respond(eval(script).toString())
+            val scriptEngine = ScriptEngineManager().getEngineByExtension("kts")
+            with(scriptEngine) {
+
+                try {
+                    it.respond(eval(script).toString())
+                } catch(e: Exception) {
+                    it.respond("Error :: could not evaluate script - ${e.cause}")
+                }
             }
         }
     }
