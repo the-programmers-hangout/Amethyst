@@ -21,9 +21,59 @@
         <j2html.version>1.3.0</j2html.version>
         <autodsl.annotation.version>0.0.9</autodsl.annotation.version>
         <autodsl.processor.version>0.0.9</autodsl.processor.version>
+        <graalvm.version>1.0.0-rc12</graalvm.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.graalvm/polyglot-tck -->
+        <dependency>
+            <groupId>org.graalvm</groupId>
+            <artifactId>polyglot-tck</artifactId>
+            <version>1.0.0-rc7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.jruby/jruby-complete -->
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>9.1.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.tools</groupId>
+            <artifactId>profiler</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jruby/jruby-truffle -->
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-truffle</artifactId>
+            <version>9.1.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.graalvm.tools</groupId>
+            <artifactId>chromeinspector</artifactId>
+            <version>${graalvm.version}</version>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>com.gitlab.aberrantfox</groupId>
             <artifactId>KUtils</artifactId>

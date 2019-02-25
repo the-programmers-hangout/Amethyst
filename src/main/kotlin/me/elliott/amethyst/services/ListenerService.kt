@@ -3,6 +3,7 @@ package me.elliott.amethyst.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.elliott.amethyst.data.RegisteredListeners
 import me.elliott.amethyst.util.EmbedUtils
+import me.elliott.amethyst.util.Utils
 import net.dv8tion.jda.core.JDA
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.MessageChannel
@@ -17,11 +18,9 @@ data class ListenerState(val id: String, val user: User, val guild: Guild,
 @Service
 class ListenerService(val jda: JDA, val configuration: Configuration) {
 
-    private fun generateShortUUID(): String = UUID.randomUUID().toString().substring(0, 7)
-
     fun createListener(user: User, guild: Guild, channel: MessageChannel) {
 
-        val listener = ListenerState(generateShortUUID(), user, guild,
+        val listener = ListenerState(Utils.generateShortUUID(), user, guild,
                 mutableListOf(), mutableListOf(), mutableListOf())
 
         RegisteredListeners.registerListener(listener)
