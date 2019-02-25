@@ -3,6 +3,7 @@ package me.elliott.amethyst.services
 import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.aberrantfox.kjdautils.api.dsl.CommandsContainer
 import me.elliott.amethyst.data.RegisteredScripts
+import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.Utils
 import net.dv8tion.jda.core.JDA
 import java.io.File
@@ -14,36 +15,45 @@ import kotlin.concurrent.timer
 
 class ScriptEngineService {
 
-
     private val functionName = "functionScope"
     private fun createFunctionContext(scriptBody: String) =
-                """
+            """
         function $functionName(event) {
             $scriptBody
         };
     """.trimIndent()
 
-    fun execWithThread(
-            engine: ScriptEngine?, name: String, author: String, script: String, commandEvent: CommandEvent) {
+    fun execWithThread(engine: ScriptEngine?, name: String,
+                       author: String, script: String, commandEvent: CommandEvent, id : String = Utils.generateShortUUID()) {
 
         val functionContext = createFunctionContext(script)
-        val id = Utils.generateShortUUID()
 
         val r = Runnable {
             try {
                 engine?.eval(functionContext)
                 (me.elliott.amethyst.services.ScriptEngineService.engine as Invocable)
                         .invokeFunction(functionName, commandEvent)
+
             } catch (e: ScriptException) {
-                commandEvent.respond("${e.message} - **cause** - ${e.cause}")
-                RegisteredScripts.removeScript(id)
+                val existingScript = RegisteredScripts.getScript(id)
+
+                when (existingScript != null) {
+                    existingScript?.status == Constants.STOPPED -> {
+                        //TODO :: Stop Notification
+                    }
+                    else -> {
+                        commandEvent.respond("${e.message} - **cause** - ${e.cause}")
+                        RegisteredScripts.removeScript(id)
+                    }
+                }
             }
         }
 
         val t = Thread(r)
         t.start()
 
-        RegisteredScripts.addScript(id, name, author, script, t)
+        if (!RegisteredScripts.scriptExists(id))
+            RegisteredScripts.addScript(id, name, author, script, t)
     }
 
     companion object EngineContainer {
@@ -75,7 +85,6 @@ class ScriptEngineService {
                 .map { it.readText() }
                 .forEach { engine.eval(it) }
     }
-
-
 }
+
 

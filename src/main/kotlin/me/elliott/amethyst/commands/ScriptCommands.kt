@@ -7,6 +7,7 @@ import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
 import me.elliott.amethyst.arguments.ScriptArg
 import me.elliott.amethyst.data.RegisteredScripts
+import me.elliott.amethyst.data.Script
 import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.util.EmbedUtils
 import net.dv8tion.jda.core.MessageBuilder
@@ -49,14 +50,29 @@ fun scriptCommands() = commands {
         description = "Stop the specified script"
         expect(ScriptArg("The ID of the script you'd like to stop."))
         execute {
-            val id = it.args.component1().toString()
-                RegisteredScripts.stopScript(id)
+            val script = it.args.component1() as Script
+            RegisteredScripts.stopScript(script)
 
             it.respond(
                     embed {
-                    title("Script $id Stopped")
-                    color(Color.RED)
-                })
+                        title("Script ${script.id} Stopped")
+                        color(Color.RED)
+                    })
+        }
+    }
+
+    command("start-script") {
+        description = "Start the specified script"
+        expect(ScriptArg("The ID of the script you'd like to start."))
+        execute {
+            val script = it.args.component1() as Script
+            RegisteredScripts.startScript(script, it)
+
+            it.respond(
+                    embed {
+                        title("Script ${script.id} Started")
+                        color(Color.GREEN)
+                    })
         }
     }
 
@@ -66,12 +82,12 @@ fun scriptCommands() = commands {
 
         execute {
             val id = it.args.component1() as String
-                it.respond(embed {
-                    title("Script Content - ID: **$id**")
-                })
+            it.respond(embed {
+                title("Script Content - ID: **$id**")
+            })
 
             MessageBuilder().appendCodeBlock(
-                        RegisteredScripts.getScript(id)?.script, "Javacript")
+                    RegisteredScripts.getScript(id)?.script, "Javacript")
                     .buildAll().forEach { message ->
                         it.channel.sendMessage(message)
                     }
