@@ -8,7 +8,6 @@ import net.dv8tion.jda.core.JDA
 import net.dv8tion.jda.core.entities.Guild
 import net.dv8tion.jda.core.entities.MessageChannel
 import net.dv8tion.jda.core.entities.User
-import java.util.*
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
 

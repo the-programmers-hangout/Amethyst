@@ -1,8 +1,10 @@
 package me.elliott.amethyst.util
 
 import me.aberrantfox.kjdautils.api.dsl.embed
+import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.services.ListenerState
 import net.dv8tion.jda.core.entities.Guild
+import net.dv8tion.jda.core.entities.MessageEmbed
 import net.dv8tion.jda.core.entities.User
 import java.awt.Color
 
@@ -20,15 +22,21 @@ class EmbedUtils {
                     setThumbnail(guildObject.iconUrl)
                 }
 
+        fun buildScriptListEmbed(running: Boolean): MessageEmbed {
 
-        fun buildSourceAddedEmbed(listenerState: ListenerState, isUser: Boolean) =
-                embed {
-                    setColor(Color.PINK)
-                    setTitle("Would you like to listen to anything else?")
-                    setAuthor("You're currently listening to ")
+            val status = if (running) Constants.RUNNING else Constants.STOPPED
+            val color = if (running) Color.GREEN else Color.RED
 
-                    setThumbnail(listenerState.guild.iconUrl)
+            return embed {
+                title("$status Scripts")
+                RegisteredScripts.getScripts(running).forEach { script ->
+                    addField("ID", script.id, true)
+                    addField("Author", script.author, true)
+                    addField("Name", script.name, true)
                 }
+                color(color)
+            }
+        }
 
         fun buildMessageDestinationEmbed(listenerId: String, user: User, match: String) =
                 embed {

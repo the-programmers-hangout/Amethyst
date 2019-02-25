@@ -4,21 +4,21 @@ import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.aberrantfox.kjdautils.internal.command.ArgumentResult
 import me.aberrantfox.kjdautils.internal.command.ArgumentType
 import me.aberrantfox.kjdautils.internal.command.ConsumptionType
-import me.elliott.amethyst.data.RegisteredListeners
+import me.elliott.amethyst.data.RegisteredScripts
 
-open class ListenerArg(override val name: String = "ListenerArg") : ArgumentType {
-    companion object : ListenerArg()
+open class ScriptArg(override val name: String = "ScriptArg") : ArgumentType {
+    companion object : ScriptArg()
 
-    override val examples = arrayListOf("9acd4rfv")
+    override val examples = arrayListOf("2afd4rf")
     override val consumptionType = ConsumptionType.Single
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent): ArgumentResult {
-        val retrieved = RegisteredListeners.tryReturnListener(arg)
+        val retrieved = RegisteredScripts.tryReturnScript(arg)
 
         return if (retrieved != null) {
             ArgumentResult.Single(retrieved)
         } else {
-            ArgumentResult.Error("Couldn't find a listener with the ID you provided: $arg")
+            ArgumentResult.Error("Couldn't find a script with the ID you provided: $arg")
         }
     }
 }
