@@ -1,6 +1,5 @@
 package me.elliott.amethyst.data
 
-
 import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.util.Constants

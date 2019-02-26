@@ -19,14 +19,14 @@ class ScriptEngineService {
 
             try {
 
-                val setupScripts = File("config/scripts${File.separator}jsapi")
-                val bindings = context.getBindings("js")
+                val setupScripts = File("scripts${File.separator}js")
+                val bindings = context.getBindings(Constants.JS)
 
                 bindings.putMember("event", event);
                 bindings.putMember("jda", event.jda)
                 walkDirectory(setupScripts, context)
 
-                context.eval("js", createFunctionContext(script))
+                context.eval(Constants.JS, createFunctionContext(script))
 
             } catch (e: PolyglotException) {
                 event.respond("Error :: ${e.cause} - ${e.message}")

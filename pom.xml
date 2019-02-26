@@ -41,33 +41,27 @@
             <artifactId>js-scriptengine</artifactId>
             <version>${graalvm.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.graalvm/polyglot-tck -->
         <dependency>
             <groupId>org.graalvm</groupId>
             <artifactId>polyglot-tck</artifactId>
             <version>1.0.0-rc7</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.jruby/jruby-complete -->
         <dependency>
             <groupId>org.jruby</groupId>
             <artifactId>jruby-complete</artifactId>
             <version>9.1.7.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.graalvm.tools</groupId>
             <artifactId>profiler</artifactId>
             <version>${graalvm.version}</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jruby/jruby-truffle -->
         <dependency>
             <groupId>org.jruby</groupId>
             <artifactId>jruby-truffle</artifactId>
             <version>9.1.7.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.graalvm.tools</groupId>
             <artifactId>chromeinspector</artifactId>
@@ -100,14 +94,21 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.nop.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.oracle.truffleruby</groupId>
+            <artifactId>truffleruby-zip-darwin-amd64</artifactId>
+            <version>LATEST</version>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.truffleruby</groupId>
+            <artifactId>truffleruby-graalvm-support-darwin-amd64</artifactId>
+            <version>LATEST</version>
+        </dependency>
         <dependency>
             <groupId>com.j2html</groupId>
             <artifactId>j2html</artifactId>
             <version>${j2html.version}</version>
         </dependency>
-
-        <!-- Test Dependencies -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test</artifactId>
@@ -163,13 +164,11 @@
             <artifactId>kotlin-script-util</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-script-runtime -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-script-runtime</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-compiler -->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-compiler</artifactId>
@@ -181,6 +180,12 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
+        <repository>
+            <id>graal</id>
+            <url>http://lafo.ssw.jku.at/nexus/content/repositories/repos-public</url>
+        </repository>
+
         <repository>
             <id>spek-dev</id>
             <url>https://dl.bintray.com/spekframework/spek-dev</url>
