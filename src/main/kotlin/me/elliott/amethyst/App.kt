@@ -15,8 +15,7 @@ private fun start(token: String) = startBot(token) {
         globalPath = "me.elliott.amethyst"
     }
 
-    ScriptEngineService.engine = ScriptEngineService.setupScriptEngine(jda, container)
-    ScriptEngineService.setupScriptWatcher()
+    //ScriptEngineService.setupScriptWatcher()
 
     jda.presence.setPresence(Game.of(Game.GameType.WATCHING, "The Server"), true)
 }

@@ -7,14 +7,14 @@ import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
 import me.elliott.amethyst.arguments.ScriptArg
 import me.elliott.amethyst.data.RegisteredScripts
-import me.elliott.amethyst.data.Script
+import me.elliott.amethyst.data.ScriptData
 import me.elliott.amethyst.services.ScriptEngineService
+import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.EmbedUtils
 import net.dv8tion.jda.core.MessageBuilder
 import java.awt.Color
 import javax.script.ScriptEngineManager
 import javax.script.SimpleBindings
-
 
 @CommandSet("api")
 fun scriptCommands() = commands {
@@ -25,7 +25,7 @@ fun scriptCommands() = commands {
             val name = it.args.component1() as String
             val script = it.args.component2() as String
 
-            ScriptEngineService().execWithThread(ScriptEngineService.engine, name,
+            ScriptEngineService().exec(name,
                     it.author.asMention, script, it)
         }
     }
@@ -50,7 +50,7 @@ fun scriptCommands() = commands {
         description = "Stop the specified script"
         expect(ScriptArg("The ID of the script you'd like to stop."))
         execute {
-            val script = it.args.component1() as Script
+            val script = it.args.component1() as ScriptData
             RegisteredScripts.stopScript(script)
 
             it.respond(
@@ -65,7 +65,7 @@ fun scriptCommands() = commands {
         description = "Start the specified script"
         expect(ScriptArg("The ID of the script you'd like to start."))
         execute {
-            val script = it.args.component1() as Script
+            val script = it.args.component1() as ScriptData
             RegisteredScripts.startScript(script, it)
 
             it.respond(
@@ -81,15 +81,15 @@ fun scriptCommands() = commands {
         expect(ScriptArg("ID of the script you'd like to view."))
 
         execute {
-            val id = it.args.component1() as String
+            val script = it.args.component1() as ScriptData
             it.respond(embed {
-                title("Script Content - ID: **$id**")
+                title("Script Content - ID: **${script.id}**")
             })
 
             MessageBuilder().appendCodeBlock(
-                    RegisteredScripts.getScript(id)?.script, "Javacript")
+                    script.script, Constants.JAVASCRIPT)
                     .buildAll().forEach { message ->
-                        it.channel.sendMessage(message)
+                        it.channel.sendMessage(message).queue()
                     }
         }
     }
@@ -109,4 +109,5 @@ fun scriptCommands() = commands {
         }
     }
 }
+
 
