@@ -1,7 +1,7 @@
 package me.elliott.amethyst
 
 import me.aberrantfox.kjdautils.api.startBot
-import me.elliott.amethyst.services.ScriptEngineService
+import me.elliott.amethyst.services.init
 import net.dv8tion.jda.core.entities.Game
 
 fun main(args: Array<String>) {
@@ -15,7 +15,7 @@ private fun start(token: String) = startBot(token) {
         globalPath = "me.elliott.amethyst"
     }
 
-    //ScriptEngineService.setupScriptWatcher()
+    init()
 
     jda.presence.setPresence(Game.of(Game.GameType.WATCHING, "The Server"), true)
 }

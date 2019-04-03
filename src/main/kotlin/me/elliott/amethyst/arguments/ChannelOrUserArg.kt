@@ -22,6 +22,7 @@ open class ChannelOrUserArg(override val name: String = "ChannelOrUserArg") : Ar
 fun getChannelOrUser(jda: JDA, arg: String): ArgumentResult {
     var retrieved = tryRetrieveSnowflake(jda) { it.getTextChannelById(arg.trimToID()) }
 
+
     if (retrieved == null)
         retrieved = tryRetrieveSnowflake(jda) { it.retrieveUserById(arg.trimToID()).complete() }
 

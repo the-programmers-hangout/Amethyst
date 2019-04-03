@@ -22,6 +22,7 @@
         <autodsl.annotation.version>0.0.9</autodsl.annotation.version>
         <autodsl.processor.version>0.0.9</autodsl.processor.version>
         <graalvm.version>1.0.0-rc12</graalvm.version>
+        <GRAAL_JRE_HOME>/Users/elliott/Downloads/graalvm-ce-1.0.0-rc12/Contents/Home/jre</GRAAL_JRE_HOME>
     </properties>
 
     <dependencies>
@@ -36,21 +37,13 @@
             <version>${graalvm.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.graalvm.sdk/polyglot-tck -->
         <dependency>
-            <groupId>org.graalvm.js</groupId>
-            <artifactId>js-scriptengine</artifactId>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>polyglot-tck</artifactId>
             <version>${graalvm.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.graalvm</groupId>
-            <artifactId>polyglot-tck</artifactId>
-            <version>1.0.0-rc7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jruby</groupId>
-            <artifactId>jruby-complete</artifactId>
-            <version>9.1.7.0</version>
-        </dependency>
+
         <dependency>
             <groupId>org.graalvm.tools</groupId>
             <artifactId>profiler</artifactId>
@@ -58,9 +51,9 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.jruby</groupId>
-            <artifactId>jruby-truffle</artifactId>
-            <version>9.1.7.0</version>
+            <groupId>com.github.ptnplanet</groupId>
+            <artifactId>Java-Naive-Bayes-Classifier</artifactId>
+            <version>1.0.7</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.tools</groupId>
@@ -93,16 +86,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j.nop.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.truffleruby</groupId>
-            <artifactId>truffleruby-zip-darwin-amd64</artifactId>
-            <version>LATEST</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.truffleruby</groupId>
-            <artifactId>truffleruby-graalvm-support-darwin-amd64</artifactId>
-            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>com.j2html</groupId>
@@ -158,16 +141,6 @@
             <groupId>com.juanchosaravia.autodsl</groupId>
             <artifactId>processor</artifactId>
             <version>${autodsl.processor.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-script-util</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-script-runtime</artifactId>
-            <version>${kotlin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -269,9 +242,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <verbose>true</verbose>
+                    <fork>true</fork>
+                    <executable>${GRAAL_JRE_HOME}/bin/javac</executable>
+                    <compilerVersion>1.8</compilerVersion>
                 </configuration>
             </plugin>
             <plugin>

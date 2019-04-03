@@ -9,10 +9,15 @@ import me.elliott.amethyst.arguments.ScriptArg
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.data.ScriptData
 import me.elliott.amethyst.services.ScriptEngineService
+import me.elliott.amethyst.services.createFunctionContext
+import me.elliott.amethyst.services.walkDirectory
 import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.EmbedUtils
 import net.dv8tion.jda.core.MessageBuilder
+import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.PolyglotException
 import java.awt.Color
+import java.io.File
 import javax.script.ScriptEngineManager
 import javax.script.SimpleBindings
 
@@ -99,13 +104,30 @@ fun scriptCommands() = commands {
         expect(SentenceArg)
         execute {
 
-            val script = it.args.component1().toString()
-            val manager = ScriptEngineManager()
-            val engine = manager.getEngineByName("jruby")
-            val bindings = SimpleBindings()
-            bindings["event"] = it
+            val context = Context.newBuilder().allowHostAccess(true).build()
 
-            engine.eval(script, bindings)
+            try {
+
+                val setupScripts = File("scripts${File.separator}js")
+                val bindings = context.getBindings(Constants.JS)
+
+                bindings.putMember("event", it)
+                bindings.putMember("jda", it.jda)
+
+                val rubyBindings = context.getBindings("ruby")
+
+                rubyBindings.putMember("event", it)
+                rubyBindings.putMember("jda", it.jda)
+
+                walkDirectory(setupScripts, context)
+
+                context.eval("ruby", createFunctionContext(it.args.component1() as String))
+
+            } catch (e: PolyglotException) {
+                it.respond("Error :: ${e.cause} - ${e.message}")
+                e.printStackTrace()
+            }
+
         }
     }
 }

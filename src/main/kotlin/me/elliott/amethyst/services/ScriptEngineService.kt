@@ -4,39 +4,47 @@ import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.Utils
-import org.graalvm.polyglot.Context
-import org.graalvm.polyglot.PolyglotException
+import org.graalvm.polyglot.*
 import java.io.File
-import kotlin.concurrent.timer
 
 class ScriptEngineService {
 
-    fun exec(name: String,
-             author: String, script: String, event: CommandEvent, id: String = Utils.generateShortUUID()) {
+    fun exec(name: String, author: String, script: String, event: CommandEvent,
+             id: String = Utils.generateShortUUID()) {
 
-        val context = Context.newBuilder().option("js.nashorn-compat", "true")
-                .allowHostAccess(true).build()
+        val context = Context.newBuilder()
+                .allowIO(true)
+                .allowAllAccess(true)
+                .allowHostAccess(true)
+                .allowNativeAccess(true)
+                .allowHostClassLoading(true)
+                .build()
 
-            try {
+        try {
+            val setupScripts = File("scripts${File.separator}js")
 
-                val setupScripts = File("scripts${File.separator}js")
-                val bindings = context.getBindings(Constants.JS)
+            context.polyglotBindings.putMember("event", event)
+            context.polyglotBindings.putMember("jda", event.jda)
 
-                bindings.putMember("event", event);
-                bindings.putMember("jda", event.jda)
-                walkDirectory(setupScripts, context)
+            walkDirectory(setupScripts, context)
 
+            val language = bayes.classify(script.split(" "))
+
+            println("Detected Language :: ${language.category}")
+
+            if (language.category == Constants.JS)
                 context.eval(Constants.JS, createFunctionContext(script))
+            else
+                context.eval(language.category, script)
 
-            } catch (e: PolyglotException) {
-                event.respond("Error :: ${e.cause} - ${e.message}")
-            }
-
-        RegisteredScripts.addScript(id, name, author, script, context)
+        } catch (e: PolyglotException) {
+            event.respond("Error :: ${e.cause} - ${e.message}")
         }
+        RegisteredScripts.addScript(id, name, author, script, context)
     }
+}
 
-private fun walkDirectory(dir: File, context: Context) = dir.walk()
+fun walkDirectory(dir: File, context: Context) = dir.walk()
         .filter { !it.isDirectory }
         .map { it.readText() }
         .forEach { context.eval(Constants.JS, it) }
@@ -49,14 +57,4 @@ fun createFunctionContext(scriptBody: String) =
 
         ${Constants.FUNCTION_NAME}(event);
     """.trimIndent()
-
-fun setupScriptWatcher() {
-            timer(name = "script-watcher", initialDelay = 0, period = 1000) {
-                if (RegisteredScripts.scriptsAreRegistered())
-                    RegisteredScripts.getAllScripts().forEach {
-                        //TODO: Figure out how to get the state of the thread Graal executes the evaluated script in.
-                    }
-            }
-}
-
 
