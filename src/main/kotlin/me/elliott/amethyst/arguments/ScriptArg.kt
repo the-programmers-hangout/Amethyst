@@ -4,21 +4,27 @@ import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.aberrantfox.kjdautils.internal.command.ArgumentResult
 import me.aberrantfox.kjdautils.internal.command.ArgumentType
 import me.aberrantfox.kjdautils.internal.command.ConsumptionType
-import me.elliott.amethyst.data.RegisteredScripts
+import me.elliott.amethyst.services.ExecutionResult
+import me.elliott.amethyst.services.ScriptEngineService
 
-open class ScriptArg(override val name: String = "ScriptArg") : ArgumentType {
+open class ScriptArg(override val name: String = "ScriptArg", val language: String = "js",
+                     val watch: Boolean = false) : ArgumentType {
+
     companion object : ScriptArg()
 
-    override val examples = arrayListOf("2afd4rf")
-    override val consumptionType = ConsumptionType.Single
+    override val examples = arrayListOf("`Provide code for execution.`")
+    override val consumptionType = ConsumptionType.All
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent): ArgumentResult {
-        val retrieved = RegisteredScripts.tryReturnScript(arg)
 
-        return if (retrieved != null) {
-            ArgumentResult.Single(retrieved)
+        val returned = ScriptEngineService().exec(name,
+                event.author.asMention, language, args.joinToString(" "), event, watch)
+
+        return if (returned is ExecutionResult.Success) {
+            ArgumentResult.Single(true)
         } else {
-            ArgumentResult.Error("Couldn't find a script with the ID you provided: $arg")
+            val error = returned as ExecutionResult.Error
+            ArgumentResult.Error(error.message)
         }
     }
 }

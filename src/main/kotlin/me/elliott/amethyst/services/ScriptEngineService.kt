@@ -10,8 +10,9 @@ import java.io.File
 class ScriptEngineService {
 
     fun exec(name: String, author: String, language: String, script: String, event: CommandEvent,
-             id: String = Utils.generateShortUUID()) {
+             watch: Boolean, id: String = Utils.generateShortUUID()): ExecutionResult {
 
+        println("Executing :: $language")
         val context = Context.newBuilder()
                 .option("js.nashorn-compat", "true")
                 .allowIO(true)
@@ -30,23 +31,30 @@ class ScriptEngineService {
         }
 
         try {
-
             walkDirectory(setupScripts, context)
-
-            RegisteredScripts.addScript(id, name, author, language, script, context)
 
             if (language == Constants.JS)
                 context.eval(Constants.JS, createFunctionContext(script))
             else
                 context.eval(language, script)
 
-
         } catch (e: PolyglotException) {
             if (e.message != Constants.THREAD_STOPPED_MESSAGE) {
-                event.respond("Error :: ${e.cause} - ${e.message}")
                 RegisteredScripts.removeScript(id)
+                return ExecutionResult.Error("Error :: ${e.cause} - ${e.message}")
             }
         }
+        return ExecutionResult.Success(id, context)
+    }
+}
+
+sealed class ExecutionResult {
+    data class Success(val id: String, val context: Context) : ExecutionResult() {
+        companion object
+    }
+
+    data class Error(val message: String) : ExecutionResult() {
+        companion object
     }
 }
 

@@ -3,12 +3,15 @@ package me.elliott.amethyst.commands
 import me.aberrantfox.kjdautils.api.dsl.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
+import me.aberrantfox.kjdautils.internal.command.ConversationService
 import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
 import me.elliott.amethyst.arguments.InstalledLanguageArg
-import me.elliott.amethyst.arguments.ScriptArg
+import me.elliott.amethyst.arguments.ScriptIdArg
+import me.elliott.amethyst.arguments.YesNoArg
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.data.ScriptData
+import me.elliott.amethyst.services.ExecutionResult
 import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.EmbedUtils
@@ -16,19 +19,30 @@ import net.dv8tion.jda.core.MessageBuilder
 import java.awt.Color
 
 @CommandSet("api")
-fun scriptCommands() = commands {
+fun scriptCommands(conversationService: ConversationService) = commands {
     command("eval") {
-        description = "Evaluate JavaScript code using Graal - without an automatic response."
+        description = "Evaluate code using Graal - without an automatic response."
         expect(WordArg("Name of the script (no spaces)"), InstalledLanguageArg("Name of the script language"),
-                SentenceArg("Graal JavaScript Code"))
+                YesNoArg("Watch Script Execution"), SentenceArg("Code"))
 
         execute {
             val name = it.args.component1() as String
             val language = it.args.component2() as String
-            val script = it.args.component3() as String
+            val watch = it.args.component3() as Boolean
+            val script = it.args.component4() as String
+            val returned = ScriptEngineService().exec(name,
+                    it.author.asMention, language, script, it, watch)
 
-            ScriptEngineService().exec(name,
-                    it.author.asMention, language, script, it)
+            when (returned) {
+                is ExecutionResult.Error -> {
+                    it.respond(returned.message)
+                }
+
+                is ExecutionResult.Success -> {
+                    RegisteredScripts.addScript(returned.id, name, it.author.asMention,
+                            language, script, returned.context, watch)
+                }
+            }
         }
     }
 
@@ -48,9 +62,16 @@ fun scriptCommands() = commands {
         }
     }
 
+    command("convo") {
+        description = "List all currently running scripts"
+        execute {
+           conversationService.createConversation(it.author.id, it.guild!!.id, "add-script")
+        }
+    }
+
     command("stop-script") {
         description = "Stop the specified script"
-        expect(ScriptArg("The ID of the script you'd like to stop."))
+        expect(ScriptIdArg("The ID of the script you'd like to stop."))
         execute {
             val script = it.args.component1() as ScriptData
             it.respond(
@@ -65,7 +86,7 @@ fun scriptCommands() = commands {
 
     command("start-script") {
         description = "Start the specified script"
-        expect(ScriptArg("The ID of the script you'd like to start."))
+        expect(ScriptIdArg("The ID of the script you'd like to start."))
         execute {
             val script = it.args.component1() as ScriptData
             RegisteredScripts.startScript(script, it)
@@ -80,7 +101,7 @@ fun scriptCommands() = commands {
 
     command("view-script") {
         description = "View Script Content"
-        expect(ScriptArg("ID of the script you'd like to view."))
+        expect(ScriptIdArg("ID of the script you'd like to view."))
 
         execute {
             val script = it.args.component1() as ScriptData

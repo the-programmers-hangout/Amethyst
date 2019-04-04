@@ -16,4 +16,4 @@ const WordArg = Java.type("me.aberrantfox.kjdautils.internal.command.arguments.W
 
 const ChannelOrUserArg = Java.type("me.elliott.amethyst.arguments.ChannelOrUserArg").Companion
 const ListenerArg = Java.type("me.elliott.amethyst.arguments.ListenerArg").Companion
-const ScriptArg = Java.type("me.elliott.amethyst.arguments.ScriptArg").Companion
+const ScriptArg = Java.type("me.elliott.amethyst.arguments.ScriptIdArg").Companion

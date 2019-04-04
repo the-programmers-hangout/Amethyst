@@ -16,10 +16,12 @@ open class InstalledLanguageArg(override val name: String = "InstalledLanguageAr
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent): ArgumentResult {
 
-        val installedLanguages = Context.newBuilder().allowAllAccess(true).build().engine.languages
+        val context = Context.newBuilder().allowAllAccess(true).build()
+        val installedLanguages = context.engine.languages
 
         return if (installedLanguages.contains(arg.trim().toLowerCase())) {
             ArgumentResult.Single(arg)
+
         } else {
             ArgumentResult.Error("Couldn't find an installed language with the value you " +
                     "provided: $arg - installed languages are: " +
