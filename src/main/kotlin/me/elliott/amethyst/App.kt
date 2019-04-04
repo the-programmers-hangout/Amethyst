@@ -20,19 +20,19 @@ private fun start(token: String) = startBot(token) {
         globalPath = "me.elliott.amethyst"
     }
 
-    jda.presence.setPresence(Game.of(Game.GameType.WATCHING, "The Server"), true)
+    jda.presence.setPresence(Game.of(Game.GameType.WATCHING, "Your Scripts"), true)
 
     Timer("scriptWatcher", true).scheduleAtFixedRate(1000,
             1000) {
         if (RegisteredScripts.hasRunningScripts()) {
             RegisteredScripts.getAllScripts().forEach { script ->
                 try {
-                    script.context.close(false)
-                } catch (e: Exception) { }
-
+                    if (script.watch)
+                        script.context.close(false)
+                } catch (e: Exception) {
+                }
                 try {
                     script.context.polyglotBindings
-
                 } catch (e: Exception) {
                     script.status = Constants.STOPPED
                 }

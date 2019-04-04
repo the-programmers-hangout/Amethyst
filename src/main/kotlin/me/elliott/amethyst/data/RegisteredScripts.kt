@@ -44,7 +44,7 @@ class RegisteredScripts {
             removeScript(script.id)
             ScriptEngineService().exec(script.name,
                     script.author, script.language, script.script, event, script.watch, script.id)
-            
+
             addScript(script.id, script.name, script.author, script.language, script.script,
                     script.context, script.watch)
         }
