@@ -5,8 +5,8 @@ import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.util.Constants
 import org.graalvm.polyglot.Context
 
-data class ScriptData(val id: String, var name: String, val author: String, var script: String,
-                  var status: String, var context: Context)
+data class ScriptData(val id: String, var name: String, var language: String, val author: String, var script: String,
+                      var status: String, var context: Context)
 
 class RegisteredScripts {
 
@@ -26,8 +26,8 @@ class RegisteredScripts {
             s.status == if (running) Constants.RUNNING else Constants.STOPPED
         }
 
-        fun addScript(id: String, name: String, author: String, script: String, context: Context) {
-            scripts[id] = ScriptData(id, name, author, script, Constants.RUNNING, context)
+        fun addScript(id: String, name: String, author: String, language: String, script: String, context: Context) {
+            scripts[id] = ScriptData(id, name, author, language, script, Constants.RUNNING, context)
         }
 
         fun stopScript(script: ScriptData) {
@@ -38,7 +38,7 @@ class RegisteredScripts {
         fun startScript(script: ScriptData, event: CommandEvent) {
             removeScript(script.id)
             ScriptEngineService().exec(script.name,
-                    script.author, script.script, event, script.id)
+                    script.author, script.language, script.script, event, script.id)
         }
 
         fun removeScript(id: String) {

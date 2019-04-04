@@ -1,5 +1,6 @@
 package me.elliott.amethyst.services
 
+import com.sun.tools.classfile.ConstantPool
 import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.util.Constants
@@ -9,10 +10,11 @@ import java.io.File
 
 class ScriptEngineService {
 
-    fun exec(name: String, author: String, script: String, event: CommandEvent,
+    fun exec(name: String, author: String, language: String, script: String, event: CommandEvent,
              id: String = Utils.generateShortUUID()) {
 
         val context = Context.newBuilder()
+                .option("js.nashorn-compat", "true")
                 .allowIO(true)
                 .allowAllAccess(true)
                 .allowHostAccess(true)
@@ -20,27 +22,28 @@ class ScriptEngineService {
                 .allowHostClassLoading(true)
                 .build()
 
-        try {
-            val setupScripts = File("scripts${File.separator}js")
+        val setupScripts = File("scripts${File.separator}${Constants.JS}")
+        val bindings = mapOf("event" to event, "jda" to event.jda)
 
-            context.polyglotBindings.putMember("event", event)
-            context.polyglotBindings.putMember("jda", event.jda)
+        bindings.forEach {
+            context.getBindings(Constants.JS).putMember(it.key, it.value)
+            context.polyglotBindings.putMember(it.key, it.value)
+        }
+
+        try {
 
             walkDirectory(setupScripts, context)
 
-            val language = bayes.classify(script.split(" "))
-
-            println("Detected Language :: ${language.category}")
-
-            if (language.category == Constants.JS)
+            if (language == Constants.JS)
                 context.eval(Constants.JS, createFunctionContext(script))
             else
-                context.eval(language.category, script)
+                context.eval(language, script)
 
+            RegisteredScripts.addScript(id, name, author, language, script, context)
         } catch (e: PolyglotException) {
             event.respond("Error :: ${e.cause} - ${e.message}")
+            RegisteredScripts.removeScript(id)
         }
-        RegisteredScripts.addScript(id, name, author, script, context)
     }
 }
 

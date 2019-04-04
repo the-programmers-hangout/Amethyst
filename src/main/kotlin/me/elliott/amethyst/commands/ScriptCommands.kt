@@ -5,6 +5,7 @@ import me.aberrantfox.kjdautils.api.dsl.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
+import me.elliott.amethyst.arguments.InstalledLanguageArg
 import me.elliott.amethyst.arguments.ScriptArg
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.data.ScriptData
@@ -25,13 +26,16 @@ import javax.script.SimpleBindings
 fun scriptCommands() = commands {
     command("eval") {
         description = "Evaluate JavaScript code using Graal - without an automatic response."
-        expect(WordArg("Name of the script (no spaces)"), SentenceArg("Graal JavaScript Code"))
+        expect(WordArg("Name of the script (no spaces)"), InstalledLanguageArg("Name of the script language"),
+                SentenceArg("Graal JavaScript Code"))
+
         execute {
             val name = it.args.component1() as String
-            val script = it.args.component2() as String
+            val language = it.args.component2() as String
+            val script = it.args.component3() as String
 
             ScriptEngineService().exec(name,
-                    it.author.asMention, script, it)
+                    it.author.asMention, language, script, it)
         }
     }
 
@@ -96,38 +100,6 @@ fun scriptCommands() = commands {
                     .buildAll().forEach { message ->
                         it.channel.sendMessage(message).queue()
                     }
-        }
-    }
-
-    command("eval-ruby") {
-        description = "Stop the specified script"
-        expect(SentenceArg)
-        execute {
-
-            val context = Context.newBuilder().allowHostAccess(true).build()
-
-            try {
-
-                val setupScripts = File("scripts${File.separator}js")
-                val bindings = context.getBindings(Constants.JS)
-
-                bindings.putMember("event", it)
-                bindings.putMember("jda", it.jda)
-
-                val rubyBindings = context.getBindings("ruby")
-
-                rubyBindings.putMember("event", it)
-                rubyBindings.putMember("jda", it.jda)
-
-                walkDirectory(setupScripts, context)
-
-                context.eval("ruby", createFunctionContext(it.args.component1() as String))
-
-            } catch (e: PolyglotException) {
-                it.respond("Error :: ${e.cause} - ${e.message}")
-                e.printStackTrace()
-            }
-
         }
     }
 }
