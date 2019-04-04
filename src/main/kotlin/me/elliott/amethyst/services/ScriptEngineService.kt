@@ -1,6 +1,5 @@
 package me.elliott.amethyst.services
 
-import com.sun.tools.classfile.ConstantPool
 import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.util.Constants
@@ -34,15 +33,19 @@ class ScriptEngineService {
 
             walkDirectory(setupScripts, context)
 
+            RegisteredScripts.addScript(id, name, author, language, script, context)
+
             if (language == Constants.JS)
                 context.eval(Constants.JS, createFunctionContext(script))
             else
                 context.eval(language, script)
 
-            RegisteredScripts.addScript(id, name, author, language, script, context)
+
         } catch (e: PolyglotException) {
-            event.respond("Error :: ${e.cause} - ${e.message}")
-            RegisteredScripts.removeScript(id)
+            if (e.message != Constants.THREAD_STOPPED_MESSAGE) {
+                event.respond("Error :: ${e.cause} - ${e.message}")
+                RegisteredScripts.removeScript(id)
+            }
         }
     }
 }

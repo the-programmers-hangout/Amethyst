@@ -7,5 +7,6 @@ class Constants {
         const val JS = "js"
         const val JAVASCRIPT = "Javascript"
         const val FUNCTION_NAME = "functionScope"
+        const val THREAD_STOPPED_MESSAGE = "Thread was interrupted."
     }
 }

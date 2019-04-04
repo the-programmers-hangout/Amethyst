@@ -27,25 +27,3 @@ fun utilityCommands(listenerService: ListenerService) = commands {
         }
     }
 }
-//
-//@CommandSet("api")
-//fun kotlinScriptCommands() = commands {
-//    command("eval") {
-//        description = "Evaluate Kotlin Script code - without an automatic response."
-//        expect(SentenceArg("Kotlin Code"))
-//        execute {
-//            val script = it.args.component1() as String
-//            val functionContext = ScriptEngineService.EngineContainer.generateFunctionContext(script)
-//
-//            val scriptEngine = ScriptEngineManager().getEngineByExtension("kts")
-//            with(scriptEngine) {
-//
-//                try {
-//                    it.respond(eval(script).toString())
-//                } catch(e: Exception) {
-//                    it.respond("Error :: could not evaluate script - ${e.cause}")
-//                }
-//            }
-//        }
-//    }
-//}

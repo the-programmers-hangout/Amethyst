@@ -1,11 +1,13 @@
 package me.elliott.amethyst.data
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.util.Constants
 import org.graalvm.polyglot.Context
 
-data class ScriptData(val id: String, var name: String, var language: String, val author: String, var script: String,
+data class ScriptData(val id: String, var name: String, val author: String, var language: String, var script: String,
                       var status: String, var context: Context)
 
 class RegisteredScripts {
@@ -17,7 +19,7 @@ class RegisteredScripts {
         fun scriptsAreRegistered(): Boolean = scripts.isNotEmpty()
         fun scriptExists(id: String): Boolean = scripts.contains(id)
         fun getAllScripts(): List<ScriptData> = scripts.values.toList()
-        fun getScript(id: String) = scripts.values.toList().firstOrNull { s -> s.id == id }
+        fun getScript(id: String): ScriptData = scripts.values.toList().first { s -> s.id == id }
         fun tryReturnScript(id: String): ScriptData? = scripts.values.toList().firstOrNull { l -> l.id == id }
         fun hasRunningScripts(): Boolean = scripts.filter { s -> s.value.status == Constants.RUNNING }.isNotEmpty()
         fun hasStoppedScripts(): Boolean = scripts.filter { s -> s.value.status == Constants.STOPPED }.isNotEmpty()
@@ -32,7 +34,9 @@ class RegisteredScripts {
 
         fun stopScript(script: ScriptData) {
             script.status = Constants.STOPPED
-            script.context.close(true)
+            GlobalScope.launch {
+                script.context.close(true)
+            }
         }
 
         fun startScript(script: ScriptData, event: CommandEvent) {
