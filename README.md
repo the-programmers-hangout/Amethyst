@@ -4,7 +4,7 @@ Amethyst is a bot designed to help you run various scripts and utilities at runt
 This can make tasks like identifying a certain subset of members, listening for a specific message, or automatically banning raid bots when they join much easier. Currently, JavaScript, Python and Ruby are supported languages. 
 
 ## Running Scripts
-Scripts are easily added using the `eval` command in order to successfully add a script, the following parameters must be included in your command:
+Scripts are easily added using the `eval` command, the following parameters must be included:
 
 - Script Name
 - Language
