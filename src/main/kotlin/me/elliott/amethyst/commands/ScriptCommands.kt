@@ -62,13 +62,6 @@ fun scriptCommands(conversationService: ConversationService) = commands {
         }
     }
 
-    command("convo") {
-        description = "List all currently running scripts"
-        execute {
-           conversationService.createConversation(it.author.id, it.guild!!.id, "add-script")
-        }
-    }
-
     command("stop-script") {
         description = "Stop the specified script"
         expect(ScriptIdArg("The ID of the script you'd like to stop."))
@@ -116,6 +109,11 @@ fun scriptCommands(conversationService: ConversationService) = commands {
                     }
         }
     }
+// command("test-convo") { //        description = "Launch script conversation."
+//        execute {
+//           conversationService.createConversation(it.author.id, it.guild!!.id, "add-script")
+//        }
+//    }
 }
 
 

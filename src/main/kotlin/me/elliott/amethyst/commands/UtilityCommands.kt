@@ -1,7 +1,6 @@
 package me.elliott.amethyst.commands
 
 import me.aberrantfox.kjdautils.api.dsl.*
-import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.elliott.amethyst.services.ListenerService
 
 @CommandSet

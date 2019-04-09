@@ -36,7 +36,9 @@ class RegisteredScripts {
         fun stopScript(script: ScriptData) {
             script.status = Constants.STOPPED
             GlobalScope.launch {
-                script.context.close(true)
+                try {
+                    script.context.close(true)
+                } catch (e: Exception) { }
             }
         }
 

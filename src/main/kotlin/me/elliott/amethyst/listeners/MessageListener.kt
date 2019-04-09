@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent
 @Service
 class MessageListener(listenerService: ListenerService) {
 
-    val service = listenerService
+    private val service = listenerService
 
     @Subscribe
     fun handleMessage(event: GuildMessageReceivedEvent) {

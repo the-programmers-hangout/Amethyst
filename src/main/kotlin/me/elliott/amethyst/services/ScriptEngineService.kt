@@ -12,7 +12,6 @@ class ScriptEngineService {
     fun exec(name: String, author: String, language: String, script: String, event: CommandEvent,
              watch: Boolean, id: String = Utils.generateShortUUID()): ExecutionResult {
 
-        println("Executing :: $language")
         val context = Context.newBuilder()
                 .option("js.nashorn-compat", "true")
                 .allowIO(true)
