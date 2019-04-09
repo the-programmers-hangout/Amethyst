@@ -32,7 +32,6 @@ You can easily start and stop scripts as well using the `start-script` and `stop
 - [GraalVM](https://www.graalvm.org/) 
 - [KUtils](https://gitlab.com/Aberrantfox/KUtils/)
 
------
 
 ## Deployment 
 
@@ -52,4 +51,4 @@ Example run `%CD%/scripts/deploy.bat aokspdf.okwepofk.34p1o32kpo,pqo.sASDAwd /c/
 Example run `./scripts/deploy.sh aokspdf.okwepofk.34p1o32kpo,pqo.sASDAwd /home/me/config`
    *note: The token is fake :)* 
 
-
+----
