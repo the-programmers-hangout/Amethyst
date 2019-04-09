@@ -8,7 +8,7 @@ import me.elliott.amethyst.services.ExecutionResult
 import me.elliott.amethyst.services.ScriptEngineService
 
 open class ScriptArg(override val name: String = "ScriptArg", val language: String = "js",
-                     val watch: Boolean = false) : ArgumentType {
+                     private val watch: Boolean = false) : ArgumentType {
 
     companion object : ScriptArg()
 
@@ -17,8 +17,7 @@ open class ScriptArg(override val name: String = "ScriptArg", val language: Stri
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent): ArgumentResult {
 
-        val returned = ScriptEngineService().exec(name,
-                event.author.asMention, language, args.joinToString(" "), event, watch)
+        val returned = ScriptEngineService().exec(language, args.joinToString(" "), event)
 
         return if (returned is ExecutionResult.Success) {
             ArgumentResult.Single(true)

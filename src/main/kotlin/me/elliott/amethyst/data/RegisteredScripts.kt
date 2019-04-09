@@ -10,6 +10,7 @@ import org.graalvm.polyglot.Context
 data class ScriptData(val id: String, var name: String, val author: String, var language: String, var script: String,
                       var status: String, var context: Context, var watch: Boolean)
 
+
 class RegisteredScripts {
 
     companion object {
@@ -38,14 +39,15 @@ class RegisteredScripts {
             GlobalScope.launch {
                 try {
                     script.context.close(true)
-                } catch (e: Exception) { }
+                } catch (e: Exception) {
+                }
             }
         }
 
         fun startScript(script: ScriptData, event: CommandEvent) {
             removeScript(script.id)
-            ScriptEngineService().exec(script.name,
-                    script.author, script.language, script.script, event, script.watch, script.id)
+            ScriptEngineService().exec(script.language, script.script, event, script.id)
+
 
             addScript(script.id, script.name, script.author, script.language, script.script,
                     script.context, script.watch)

@@ -11,8 +11,8 @@ import me.elliott.amethyst.arguments.ScriptIdArg
 import me.elliott.amethyst.arguments.YesNoArg
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.data.ScriptData
-import me.elliott.amethyst.services.ExecutionResult
 import me.elliott.amethyst.services.ScriptEngineService
+import me.elliott.amethyst.services.ExecutionResult
 import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.EmbedUtils
 import net.dv8tion.jda.core.MessageBuilder
@@ -30,8 +30,7 @@ fun scriptCommands(conversationService: ConversationService) = commands {
             val language = it.args.component2() as String
             val watch = it.args.component3() as Boolean
             val script = it.args.component4() as String
-            val returned = ScriptEngineService().exec(name,
-                    it.author.asMention, language, script, it, watch)
+            val returned = ScriptEngineService().exec(language, script, it)
 
             when (returned) {
                 is ExecutionResult.Error -> {
@@ -66,19 +65,21 @@ fun scriptCommands(conversationService: ConversationService) = commands {
         description = "Stop the specified script"
         expect(ScriptIdArg("The ID of the script you'd like to stop."))
         execute {
+
             val script = it.args.component1() as ScriptData
+            RegisteredScripts.stopScript(script)
+
             it.respond(
                     embed {
                         title("Script ${script.id} Stopped")
                         color(Color.RED)
                     })
-
-            RegisteredScripts.stopScript(script)
         }
     }
 
     command("start-script") {
         description = "Start the specified script"
+
         expect(ScriptIdArg("The ID of the script you'd like to start."))
         execute {
             val script = it.args.component1() as ScriptData
@@ -97,6 +98,7 @@ fun scriptCommands(conversationService: ConversationService) = commands {
         expect(ScriptIdArg("ID of the script you'd like to view."))
 
         execute {
+
             val script = it.args.component1() as ScriptData
             it.respond(embed {
                 title("Script Content - ID: **${script.id}**")
@@ -104,16 +106,25 @@ fun scriptCommands(conversationService: ConversationService) = commands {
 
             MessageBuilder().appendCodeBlock(
                     script.script, Constants.JAVASCRIPT)
+
+            val id = it.args.component1() as String
+            it.respond(embed {
+                title("Script Content - ID: **$id**")
+            })
+
+            MessageBuilder().appendCodeBlock(
+                    RegisteredScripts.getScript(id)?.script, "Javacript")
                     .buildAll().forEach { message ->
                         it.channel.sendMessage(message).queue()
                     }
         }
     }
+}
+
 // command("test-convo") { //        description = "Launch script conversation."
 //        execute {
 //           conversationService.createConversation(it.author.id, it.guild!!.id, "add-script")
 //        }
 //    }
-}
 
 
