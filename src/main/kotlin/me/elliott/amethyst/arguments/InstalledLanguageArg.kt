@@ -16,6 +16,7 @@ open class InstalledLanguageArg(override val name: String = "InstalledLanguageAr
 
         val context = Context.newBuilder().allowAllAccess(true).build()
         val installedLanguages = context.engine.languages
+        context.close(true)
 
         return if (installedLanguages.contains(arg.trim().toLowerCase())) {
             ArgumentResult.Single(arg)

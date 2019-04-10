@@ -1,7 +1,5 @@
 package me.elliott.amethyst.util
 
-
-
 import org.graalvm.polyglot.Context
 import java.util.*
 
@@ -9,7 +7,7 @@ class Utils {
     companion object {
         fun generateShortUUID(): String = UUID.randomUUID().toString().substring(0, 7)
 
-        fun getInstalledLanguagesString(): String {
+        fun getAvailableLanguages(): String {
             val context = Context.newBuilder().allowAllAccess(true)
                     .build()
             val result = context.engine.languages.entries.map { l -> l.key }.toString()
@@ -19,6 +17,7 @@ class Utils {
         }
     }
 }
+
 
 fun <T : Comparable<T>> case(target: T, tester: Tester<T>.() -> Unit) {
     val test = Tester(target)

@@ -1,7 +1,9 @@
 package me.elliott.amethyst.commands
 
-import me.aberrantfox.kjdautils.api.dsl.*
+import me.aberrantfox.kjdautils.api.dsl.CommandSet
+import me.aberrantfox.kjdautils.api.dsl.commands
 import me.elliott.amethyst.services.ListenerService
+import me.elliott.amethyst.util.Utils
 
 @CommandSet
 fun utilityCommands(listenerService: ListenerService) = commands {
@@ -9,6 +11,13 @@ fun utilityCommands(listenerService: ListenerService) = commands {
         description = "Check the status of the bot."
         execute {
             it.respond("pong! (${it.jda.ping}ms)")
+        }
+    }
+
+    command("check-languages") {
+        description = "Lists the languages available to write scripts in."
+        execute {
+            it.respond(Utils.getAvailableLanguages())
         }
     }
 
