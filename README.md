@@ -41,7 +41,7 @@ You can easily start and stop scripts as well using the `start-script` and `stop
 1. Clone and cd into the root:  `cd /amethyst`
 2. `%CD%/scripts/deploy.bat <YOUR_BOT_TOKEN> <ABSOLUTE_PATH_TO_CONFIG_FOLDER>`
     
-Example run `%CD%/scripts/deploy.bat aokspdf.okwepofk.34p1o32kpo,pqo.sASDAwd /c/Users/account/warmbot`
+Example run `%CD%/scripts/deploy.bat aokspdf.okwepofk.34p1o32kpo,pqo.sASDAwd /c/Users/account/amethyst`
 
 ## Linux
 
@@ -49,6 +49,5 @@ Example run `%CD%/scripts/deploy.bat aokspdf.okwepofk.34p1o32kpo,pqo.sASDAwd /c/
 2. `./scripts/deploy.sh <YOUR_BOT_TOKEN> <ABSOLUTE_PATH_TO_CONFIG_FOLDER>`
 
 Example run `./scripts/deploy.sh aokspdf.okwepofk.34p1o32kpo,pqo.sASDAwd /home/me/config`
-   *note: The token is fake :)* 
 
 ----

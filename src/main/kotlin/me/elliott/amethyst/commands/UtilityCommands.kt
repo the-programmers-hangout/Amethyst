@@ -15,7 +15,7 @@ fun utilityCommands(listenerService: ListenerService) = commands {
     command("source") {
         description = "Display the source code via a GitLab link."
         execute {
-            it.respond("https://github.com/elliottshort/amethyst")
+            it.respond("https://gitlab.com/tphelliott/amethyst")
         }
     }
 

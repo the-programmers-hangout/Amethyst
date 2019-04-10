@@ -3,7 +3,6 @@ package me.elliott.amethyst.commands
 import me.aberrantfox.kjdautils.api.dsl.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
-import me.aberrantfox.kjdautils.internal.command.ConversationService
 import me.aberrantfox.kjdautils.internal.command.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.command.arguments.WordArg
 import me.elliott.amethyst.arguments.InstalledLanguageArg
@@ -19,7 +18,7 @@ import net.dv8tion.jda.core.MessageBuilder
 import java.awt.Color
 
 @CommandSet("api")
-fun scriptCommands(conversationService: ConversationService) = commands {
+fun scriptCommands() = commands {
     command("eval") {
         description = "Evaluate code using Graal - without an automatic response."
         expect(WordArg("Name of the script (no spaces)"), InstalledLanguageArg("Name of the script language"),
@@ -120,11 +119,3 @@ fun scriptCommands(conversationService: ConversationService) = commands {
         }
     }
 }
-
-// command("test-convo") { //        description = "Launch script conversation."
-//        execute {
-//           conversationService.createConversation(it.author.id, it.guild!!.id, "add-script")
-//        }
-//    }
-
-

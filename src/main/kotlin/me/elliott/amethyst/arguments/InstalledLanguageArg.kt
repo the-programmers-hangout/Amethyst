@@ -4,8 +4,6 @@ import me.aberrantfox.kjdautils.api.dsl.CommandEvent
 import me.aberrantfox.kjdautils.internal.command.ArgumentResult
 import me.aberrantfox.kjdautils.internal.command.ArgumentType
 import me.aberrantfox.kjdautils.internal.command.ConsumptionType
-import me.elliott.amethyst.data.RegisteredScripts
-import me.elliott.amethyst.services.ScriptEngineService
 import org.graalvm.polyglot.Context
 
 open class InstalledLanguageArg(override val name: String = "InstalledLanguageArg") : ArgumentType {
