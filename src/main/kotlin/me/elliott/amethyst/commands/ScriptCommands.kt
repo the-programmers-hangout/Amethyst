@@ -10,8 +10,8 @@ import me.elliott.amethyst.arguments.ScriptIdArg
 import me.elliott.amethyst.arguments.YesNoArg
 import me.elliott.amethyst.data.RegisteredScripts
 import me.elliott.amethyst.data.ScriptData
-import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.services.ExecutionResult
+import me.elliott.amethyst.services.ScriptEngineService
 import me.elliott.amethyst.util.Constants
 import me.elliott.amethyst.util.EmbedUtils
 import net.dv8tion.jda.core.MessageBuilder
@@ -106,13 +106,8 @@ fun scriptCommands() = commands {
             MessageBuilder().appendCodeBlock(
                     script.script, Constants.JAVASCRIPT)
 
-            val id = it.args.component1() as String
-            it.respond(embed {
-                title("Script Content - ID: **$id**")
-            })
-
             MessageBuilder().appendCodeBlock(
-                    RegisteredScripts.getScript(id)?.script, "Javacript")
+                    RegisteredScripts.getScript(script.id).script, Constants.phoneticLanguageNameMap[script.language])
                     .buildAll().forEach { message ->
                         it.channel.sendMessage(message).queue()
                     }

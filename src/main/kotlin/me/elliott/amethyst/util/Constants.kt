@@ -8,5 +8,6 @@ class Constants {
         const val JAVASCRIPT = "Javascript"
         const val FUNCTION_NAME = "functionScope"
         const val THREAD_STOPPED_MESSAGE = "Thread was interrupted."
+        val phoneticLanguageNameMap = mapOf("js" to "Javascript", "python" to "Python", "ruby" to "Ruby")
     }
 }
