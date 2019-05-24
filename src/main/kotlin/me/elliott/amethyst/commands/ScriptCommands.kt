@@ -22,7 +22,7 @@ fun scriptCommands() = commands {
     command("eval") {
         description = "Evaluate code using Graal - without an automatic response."
         expect(WordArg("Name of the script (no spaces)"), InstalledLanguageArg("Name of the script language"),
-                YesNoArg("Watch Script Execution"), SentenceArg("Code"))
+                YesNoArg("Watch script execution (yes/no)"), SentenceArg("<code>"))
 
         execute {
             val name = it.args.component1() as String
