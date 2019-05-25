@@ -12,7 +12,7 @@ COPY /pom.xml /pom.xml
 COPY /src /src
 COPY /scripts /scripts
  
-RUN ./apache-maven-3.6.0/bin/mvn clean package -f /pom.xml
+RUN ./apache-maven-3.6.0/bin/mvn clean package -f /pom.xml -T100
 RUN mkdir /config/
 RUN cp /target/amethyst-1.0.0-jar-with-dependencies.jar /amethyst.jar
 CMD java -XX:-UseJVMCIClassLoader -jar amethyst.jar $BOT_TOKEN

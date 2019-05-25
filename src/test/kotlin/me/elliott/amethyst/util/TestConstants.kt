@@ -6,5 +6,6 @@ class TestConstants {
         const val TEST_JS_SCRIPT = "var result = 1+1;"
         const val JS = "js"
         const val CHANNEL_ID = "_CHANNEL_ID"
+        const val DUMMY_URL = "https://this.doesnt.exist.com"
     }
 }

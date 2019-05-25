@@ -11,7 +11,6 @@ import me.elliott.amethyst.services.ListenerService
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import kotlin.test.assertTrue
-import me.elliott.amethyst.util.TestConstants
 
 internal object ListenerFeature : Spek({
 
@@ -20,17 +19,18 @@ internal object ListenerFeature : Spek({
     Feature("Setup a listener to monitor specific users, patterns or channels.") {
 
         event = makeCommandEventMock(guildMock)
+        val listenerService = ListenerService(jdaMock)
 
-
-//        Scenario("creating a listener and listening for an event") {
-//            When("a listener is created") {
-//                ListenerService(jdaMock).createListener(produceUserMock(), guildMock,
-//                        produceTextChannelMock(guildMock))
-//            }
-//            Then("there should be a single listener registered") {
-//                assertTrue(RegisteredListeners.listeners.isNotEmpty(), "no listeners registered")
-//            }
-//        }
+        Scenario("listener lifecycle") {
+            When("a listener is created") {
+                listenerService.createListener(produceUserMock(), guildMock,
+                        produceTextChannelMock(guildMock))
+            }
+            
+            Then("there should be a single listener registered") {
+                assertTrue(RegisteredListeners.listeners.isNotEmpty(), "no listeners registered")
+            }
+        }
     }
 })
 
