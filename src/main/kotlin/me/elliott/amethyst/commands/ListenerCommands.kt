@@ -29,7 +29,7 @@ fun listenerCommands(listenerService: ListenerService) = commands {
 
         execute {
             val listener = it.args.component1() as ListenerState
-            listenerService.addSourceOrDestination(listener, it.args.component2(), true)
+            listenerService.addSource(listener, it.args.component2())
             it.respond("Source :: **${it.args.component2()}** added successfully")
         }
     }
@@ -41,7 +41,7 @@ fun listenerCommands(listenerService: ListenerService) = commands {
 
         execute {
             val listener = it.args.component1() as ListenerState
-            listenerService.addSourceOrDestination(listener, it.args.component2(), false)
+            listenerService.addDestination(listener, it.args.component2())
             it.respond("Destination :: **${it.args.component2()}** added successfully")
         }
     }

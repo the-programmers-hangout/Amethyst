@@ -10,7 +10,6 @@ import org.graalvm.polyglot.Context
 data class ScriptData(val id: String, var name: String, val author: String, var language: String, var script: String,
                       var status: String, var context: Context, var watch: Boolean)
 
-
 class RegisteredScripts {
 
     companion object {
@@ -18,7 +17,6 @@ class RegisteredScripts {
         private var scripts = mutableMapOf<String, ScriptData>()
 
         fun scriptsAreRegistered(): Boolean = scripts.isNotEmpty()
-        fun scriptExists(id: String): Boolean = scripts.contains(id)
         fun getAllScripts(): List<ScriptData> = scripts.values.toList()
         fun getScript(id: String): ScriptData = scripts.values.toList().first { s -> s.id == id }
         fun tryReturnScript(id: String): ScriptData? = scripts.values.toList().firstOrNull { l -> l.id == id }

@@ -15,7 +15,7 @@ data class ListenerState(val id: String, val user: User, val guild: Guild,
                          var sources: MutableList<Any>, var destinations: MutableList<Any>, var patterns: MutableList<Any>)
 
 @Service
-class ListenerService(val jda: JDA, val configuration: Configuration) {
+class ListenerService(val jda: JDA) {
 
     fun createListener(user: User, guild: Guild, channel: MessageChannel) {
 
@@ -26,13 +26,8 @@ class ListenerService(val jda: JDA, val configuration: Configuration) {
         channel.sendMessage(EmbedUtils.buildIntroductionEmbed(listener.guild, listener.id)).queue()
     }
 
-    fun addSourceOrDestination(listenerState: ListenerState, sourceOrDestination: Any, isSource: Boolean) {
-        if (isSource) {
-            listenerState.sources.add(sourceOrDestination)
-        } else {
-            listenerState.destinations.add(sourceOrDestination)
-        }
-    }
+    fun addDestination(listenerState: ListenerState, destination: Any) = listenerState.destinations.add(destination)
+    fun addSource(listenerState: ListenerState, source: Any) = listenerState.sources.add(source)
 
     fun addPattern(listenerState: ListenerState, pattern: String) {
         if (pattern.isRegex())
@@ -40,6 +35,7 @@ class ListenerService(val jda: JDA, val configuration: Configuration) {
         else
             listenerState.patterns.add(pattern)
     }
+
 
     fun patternsMatch(listenerState: ListenerState, message: String): Boolean {
         var patternsMatch = false
